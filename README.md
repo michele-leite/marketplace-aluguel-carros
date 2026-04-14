@@ -30,25 +30,42 @@ O desafio é transformar esse ecossistema em um modelo confiável para responder
 
 ---
 
-## Arquitetura de Dados
+## Diagrama de Arquitetura do Modelo de Dados
 
-RAW → STAGING → INTERMEDIATE → MARTS
+O fluxo foi delineado aderindo estritamente aos pilares robustos do dbt modular (Medallion + Kimball Architecture).
 
-RAW (sources)
-  ↓
-STG (limpeza + padronização)
-  ↓
-INT (regras de negócio + validações)
-  ↓
-CORE
-  ├── fct_sessions
-  ├── fct_bookings
-  ├── dim_users
-  ├── dim_partners
-  ├── dim_dates
-  ↓
-MARTS
-  └── mart_funnel
+```text
+       [Raw Postgree Database] 
+                 |
+                 v
++---------------------------------+
+|          STAGING LAYER          | 
+|  (Clean, Type-cast, Rename)     |
++---------------------------------+
+                 |
+                 v
++---------------------------------+
+|       INTERMEDIATE LAYER        |
+| (Business Rules, Anomaly Flags, |
+|      Window Func Dedupl.)       |
++---------------------------------+
+                 |
+        +--------+--------+
+        v                 v
++---------------+ +---------------+
+| CORE FACTS    | | DIMENSIONS    |
+| - fct_bookings| | - dim_users   |
+| - fct_sessions| | - dim_partners|
+|               | | - dim_dates   |
++---------------+ +---------------+
+                 |
+                 v
++---------------------------------+
+|         ANALYTICS MARTS         |
+| Aggregações finas e Dashboards  |
+| - mart_funnel                   |
++---------------------------------+
+```
 
 ---
 
