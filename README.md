@@ -69,19 +69,16 @@ O fluxo foi delineado aderindo estritamente aos pilares robustos do dbt modular 
 
 ---
 
-## Modelagem (Decisões Técnicas)
+## Justificativas: Modelagem e Materialização (Decisões Técnicas)
 
-### ⭐ Star Schema
-Separação entre fatos e dimensões para garantir performance e consistência.
+### Modelagem Dimensional
+Optamos por enveredar na abstração do Star Schema dividindo a inteligência em **Dimensões** estritas (`dim_users`, `dim_partners`) para fatiamento (slice-and-dice), operando contra as **Fatos** granulares e cronológicas (`fct_bookings`, `fct_sessions`). A premissa central aqui foi desacoplar entidades lógicas, isolando os cálculos intensos em um bloco central `Intermediate`, impedindo vazamento de complexidade para a camada analítica final.
 
-### Incremental Models
-Uso de estratégia incremental para escalar processamento de grandes volumes.
-
-### Data Quality
-Testes com dbt e dbt-expectations garantindo confiabilidade.
-
-### Regras de Negócio
-Camada intermediate centraliza validações, remoção de bots e anomalias.
+### Estratégia de Materialização
+- **Staging** (`view`): Por serem puramente cascatas de renomeação de colunas e castings leves, materializar em disco causaria custos inócuos de redundância em cloud computing.
+- **Intermediate** (`table`): São efetuados dectecções de anomalias por JOINs multi-tabelas grossos e deduplicações pesadas por `row_number()`. Cachar essa carga como de forma espessa na memória tira o burden imposto às facts na ponta.
+- **Marts_Core - Facts** (`incremental` com _delete+insert_): São logs que explodem geometricamente em volume de linhas a cada mês que se passa. Refazê-los do zero todo dia seria péssima arquitetura. A estratégia incremental engata apenas a "fatia temporal nova" do dia preservando o orçamento da infraestrutura sem impactar performance de merge nativo por conflito temporal.
+- **Marts_Analytics** (`table`): Para leitura direta no painel do Business Intelligence. Exigem velocidade vertiginosa e estão frequentemente recalculando agregações do nível superior.
 
 ---
 
