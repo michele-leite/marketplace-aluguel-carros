@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: int_valid_sessions
+    description: "Modelo intermediate que calcula duração das sessões e remove outliers ou sessões corrompidas."
+    columns:
+      - name: session_id
+        description: "Identificador da sessão"
+        tests:
+          - not_null
+          - unique
+      - name: nr_session_duration_minutes
+        description: "Duração da sessão em minutos."
+        tests:
+          - not_null
+      - name: is_24h_session_duration_flag
+        description: "Flag que indica se a duração da sessão está dentro do padrão de 24 horas."
+        tests:
+          - not_null
+      - name: is_anonymous_user_flag
+        description: "Flag que indica se a sessão foi realizada por um usuário anônimo."
+        tests:
+          - not_null
+      

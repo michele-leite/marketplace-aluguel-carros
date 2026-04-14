@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_searches
+    description: "Modelo staging de buscas por veículos, deduplicado e com as tipagens ajustadas."
+    columns:
+      - name: search_id
+        description: "Chave primária: Identificador único da busca."
+        tests:
+          - unique
+          - not_null
+      - name: session_id
+        description: "Sessão na qual a busca foi realizada."
+      - name: tsp_searched
+        description: "Timestamp da busca."
+      - name: pickup_location_name
+        description: "Local de retirada do veículo."
+      - name: dropoff_location_name
+        description: "Local de devolução do veículo; nulo indica mesmo local."
+      - name: dt_pickup
+        description: "Data desejada de retirada do veículo."
+      - name: dt_dropoff
+        description: "Data desejada de devolução do veículo."
+      - name: car_category_name
+        description: "Categoria do veículo buscado (economy, suv, etc.)."
+      - name: results_qty
+        description: "Número de ofertas retornadas na busca."
+      - name: partner_id_clicked
+        description: "ID do parceiro cujo resultado foi clicado."
+      - name: price_shown_amt
+        description: "Menor preço exibido na busca (R$)."

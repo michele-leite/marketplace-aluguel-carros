@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_partners
+    description: "Modelo staging da locadora parceira, com tipos casted e deduplicado."
+    columns:
+      - name: partner_id
+        description: "Chave primária: Identificador único do parceiro."
+        tests:
+          - unique
+          - not_null
+      - name: partner_name
+        description: "Nome comercial da locadora."
+      - name: country_code
+        description: "País de operação principal (ISO 3166-1 alpha-2)."
+      - name: tier_name
+        description: "Categoria comercial do parceiro (gold, silver, bronze)."
+      - name: partner_status
+        description: "Status de ativação do parceiro (active, inactive, suspended)."
+      - name: commission_rate_num
+        description: "Taxa de comissão acordada (decimal)."
+      - name: tsp_created
+        description: "Data de cadastro do parceiro."
+      - name: tsp_updated
+        description: "Data da última atualização do registro."
+      - name: email
+        description: "E-mail de contato operacional do parceiro."

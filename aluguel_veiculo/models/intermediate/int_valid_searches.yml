@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: int_valid_searches
+    description: "Modelo intermediate com flag para prevenção de anomalias/bots abusivos (mais de 50 buscas em 4 minutos)."
+    columns:
+      - name: search_id
+        description: "Identificador único da busca"
+        tests:
+          - not_null
+          - unique
+      - name: nr_searches_4min
+        description: "Janela contínua de pesquisas dentro da mesma sessão nos últimos 4 min."
+        tests:
+          - not_null
+      - name: partner_id_clicked
+        tests:
+          - relationships:
+              to: ref('int_partners')
+              field: partner_id
+              where: "partner_id_clicked is not null"    

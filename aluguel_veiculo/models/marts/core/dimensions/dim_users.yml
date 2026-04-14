@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: dim_users
+    description: "Dimensão de usuários com atributos de identificação e aquisição inicial (modelo Kimball)."
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    columns:
+      - name: user_id
+        description: "Identificador único do usuário"
+        tests:
+          - not_null
+          - unique
+      - name: first_session_at
+        description: "Timestamp da primeira sessão do usuário"
+      - name: first_channel
+        description: "Canal de aquisição da primeira sessão"
+        tests:
+          - accepted_values:
+              values: ['google_cpc','direct','affiliate','unknown']
+      - name: first_device
+        description: "Dispositivo da primeira sessão"
+        tests:
+          - accepted_values:
+              values: ['desktop','mobile','tablet','unknown']
+      - name: first_country
+        description: "País da primeira sessão"
+        tests:
+          - not_null
+      - name: is_anonymous_user
+        description: "Flag que indica se o usuário logou ou permaceu puramente não identificado pelas chaves"

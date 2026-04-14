@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_sessions
+    description: "Modelo staging de sessões de navegação, com tipos convertidos e limpeza de bots."
+    columns:
+      - name: session_id
+        description: "Chave primária: Identificador único da sessão (UUID)."
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        description: "Identificador do usuário autenticado; nulo indica visitante anônimo."
+      - name: channel_name
+        description: "Canal de aquisição da sessão (ex: google_cpc, direct)."
+      - name: device_type
+        description: "Tipo de dispositivo utilizado (desktop, mobile, tablet)."
+      - name: country_code
+        description: "País de origem da sessão (ISO 3166-1)."
+      - name: is_bot_flag
+        description: "Indica se a sessão foi classificada como bot (filtrado como false)."
+      - name: tsp_started
+        description: "Timestamp de início da sessão."
+      - name: tsp_ended
+        description: "Timestamp de término da sessão."
+      - name: page_views_qty
+        description: "Número de páginas visualizadas durante a sessão."
+      - name: utm_source
+        description: "Fonte da campanha de marketing (UTM)."
+      - name: utm_campaign
+        description: "Nome da campanha de marketing (UTM)."

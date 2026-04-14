@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_bookings
+    description: "Modelo staging de reservas, com valores maiores que 0, tratadas e convertidas."
+    columns:
+      - name: booking_id
+        description: "Chave primária: Identificador único da reserva."
+        tests:
+          - unique
+          - not_null
+      - name: session_id
+        description: "Sessão associada à reserva."
+      - name: user_id
+        description: "Identificador do usuário que realizou a reserva."
+      - name: partner_id
+        description: "Parceiro responsável pela reserva."
+      - name: tsp_booked
+        description: "Timestamp da criação da reserva."
+        tests:
+          - no_future_dates
+      - name: dt_pickup
+        description: "Data de retirada do veículo."
+      - name: dt_dropoff
+        description: "Data de devolução do veículo."
+      - name: pickup_location_name
+        description: "Local de retirada do veículo."
+      - name: car_category_name
+        description: "Categoria do veículo reservado."
+      - name: daily_rate_amt
+        description: "Valor da diária do veículo."
+      - name: total_amount_amt
+        description: "Valor total da reserva."
+      - name: currency_code
+        description: "Moeda da transação (ISO 4217)."
+      - name: booking_status
+        description: "Status da reserva (confirmed, pending, cancelled, etc.)."
+      - name: payment_method_name
+        description: "Forma de pagamento utilizada."

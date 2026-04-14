@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: fct_sessions
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    description: "Tabela fato de sessões com métricas de comportamento e conversão."
+    columns:
+      - name: session_id
+        description: "Identificador único da sessão"
+        tests:
+          - not_null
+          - unique   
+      - name: user_id
+        description: "Usuário associado à sessão atrelado no login"
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+      - name: tsp_started
+        description: "Timestamp do banco assinalando o 1º ping/heartbeat contínuo de rastreio inicial daquele id de scope"
+      - name: tsp_ended
+        description: "Timestamp cravando de modo absoluto o sinal raw nativo caso houve queda declarada"
+      - name: nr_session_duration_minutes
+        description: "Matemática de delta apontando a quantia pura perfeitamente contada em minutos sobre sua permanencia real"
+      - name: dt_session
+        description: "Conformed date forçando restrições de formatação estática dia-a-dia do particionamento diário nativamente"
+      - name: tsp_ended_final
+        description: "Lógica de resgate da anomalia temporal onde fecham-se por teto sessões estendendo por semanas em loops lógicos (cap em 24h)."
+      - name: channel_name
+        description: "Canal de aquisição da sessão inferido pelo agrupamento de marketing inicial"
+        tests:
+          - accepted_values:
+              values: ['google_cpc','direct','affiliate','unknown']
+              config:
+                severity: warn
+      - name: device_type
+        description: "Equipamento atestado ou forjado pelos pings (p.e., Mobile nativo vs Web Desktop de PCs)."
+      - name: country_code
+        description: "Geolocalidade abstraindo sigla associada do país atestando IP bruto da rede que logou ativamente."
+      - name: utm_source
+        description: "Tag de atribuição bruta rastreando onde exatamente originou o canal externo."
+      - name: utm_campaign
+        description: "Tag de marcação de marcom focando em apontar a string associada em ações ou naming ad-networks da marca global."
+      - name: is_bot_flag
+        description: "Regra boolean denunciadora inferindo automações forjadas se o log inicial acender padrões sujos de web botting"
+      - name: page_views_qty
+        description: "Tamanho bruto (em count int absoluto) listando quantas page-rendering calls aquela sessão requisitou nativamente em vida."
+      - name: nr_searches
+        description: "Total em integer englobando sub-actions unificadas e vinculadas por Join originantes do funil de Busca/Agendamento."
+      - name: max_search_intensity
+        description: "Régua apontando rajadas de comportamento denso (ex: +50 checks concentrados cronologicamente por intervalo restrito de tempo (bot protection))."
+      - name: nr_bookings
+        description: "Quantia cronológica explícita contendo todos the checks e carrinhos cheios abertos daquele usuário atrelados ali"
+      - name: nr_valid_bookings
+        description: "Volume higienizado extraindo fraudes ou inatividade isolada sob reserva filtrada restrita em logs finalistas completas (Completed/Confirmed)."
+      - name: nr_completed_bookings
+        description: "Fatia exclusiva que afunilou por todas as perdas terminando como entregue o ativo transacional no status log Completed integralmente."
+      - name: total_revenue_amt
+        description: "Soma absoluta financeira extraída unicamente sob esta base agregando lucros isolando para ARPU por canal global validado."
+      - name: has_search_flag
+        description: "Flag nativa boolean demonstrando a simples superação da barreira inicial de pesquisa do usuário engatado no portal."
+      - name: has_booking_flag
+        description: "Flag base convertendo a métrica de abertura nua e crua numa Boolean onde o consumer efetuou ao menos checkout bruto."
+      - name: has_valid_booking_flag
+        description: "Flag Boolean limitando checkouts confirmados transacionalmente na empresa gerando funil forte e válido no banco base."
+      - name: is_converted_session
+        description: "Determina métrica mestra e contínua do success rate indicando travessia incondicional de buscas em compra real consumada e firmada sob banco."
+      - name: engagement_level
+        description: "Ranking textual categórico ('none','low','medium','high') ranqueando quão profundo/vicioso a usabilidade durou quantitativamente."
+      - name: is_24h_session_duration_flag
+        description: "Denunciador flag de anomalia ligada puramente a cronômetro avisando se o event scope acionou limites artificias preexistentes no framework restritivo."
+      - name: rn
+        description: "Objeto/Chave colunar atrelada apenas na limpa e de-duplicação intrínseca nativa a janela por fct final (Geralmente 1 nas originais subidas)."

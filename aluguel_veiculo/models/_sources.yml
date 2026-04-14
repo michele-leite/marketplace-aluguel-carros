@@ -1,0 +1,134 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: public
+    description: "Dados brutos da plataforma Rentcars contendo sessões, buscas, reservas, parceiros e cancelamentos."
+
+    tables:
+
+      - name: raw_partners
+        description: "Cadastro de locadoras parceiras da plataforma."
+        columns:
+          - name: partner_id
+            description: "Identificador único do parceiro."
+          - name: partner_name
+            description: "Nome comercial da locadora."
+          - name: country
+            description: "País de operação principal (ISO 3166-1 alpha-2)."
+          - name: tier
+            description: "Categoria comercial do parceiro (gold, silver, bronze)."
+          - name: status
+            description: "Status de ativação do parceiro (active, inactive, suspended)."
+          - name: commission_rate
+            description: "Taxa de comissão acordada (decimal)."
+          - name: created_at
+            description: "Data de cadastro do parceiro."
+          - name: updated_at
+            description: "Data da última atualização do registro."
+          - name: contact_email
+            description: "E-mail de contato operacional do parceiro."
+
+      - name: raw_sessions
+        description: "Sessões de navegação dos usuários na plataforma."
+        columns:
+          - name: session_id
+            description: "Identificador único da sessão (UUID)."
+          - name: user_id
+            description: "Identificador do usuário autenticado; nulo indica visitante anônimo."
+          - name: started_at
+            description: "Timestamp de início da sessão."
+          - name: ended_at
+            description: "Timestamp de término da sessão."
+          - name: channel
+            description: "Canal de aquisição da sessão (ex: google_cpc, direct)."
+          - name: device
+            description: "Tipo de dispositivo utilizado (desktop, mobile, tablet)."
+          - name: country
+            description: "País de origem da sessão (ISO 3166-1)."
+          - name: page_views
+            description: "Número de páginas visualizadas durante a sessão."
+          - name: utm_source
+            description: "Fonte da campanha de marketing (UTM)."
+          - name: utm_campaign
+            description: "Nome da campanha de marketing (UTM)."
+          - name: is_bot
+            description: "Indica se a sessão foi classificada como bot."
+
+      - name: raw_searches
+        description: "Buscas realizadas pelos usuários na plataforma."
+        columns:
+          - name: search_id
+            description: "Identificador único da busca."
+          - name: session_id
+            description: "Sessão na qual a busca foi realizada."
+          - name: searched_at
+            description: "Timestamp da busca."
+          - name: pickup_location
+            description: "Local de retirada do veículo."
+          - name: dropoff_location
+            description: "Local de devolução do veículo; nulo indica mesmo local."
+          - name: pickup_date
+            description: "Data desejada de retirada do veículo."
+          - name: dropoff_date
+            description: "Data desejada de devolução do veículo."
+          - name: car_category
+            description: "Categoria do veículo buscado (economy, suv, etc.)."
+          - name: num_results
+            description: "Número de ofertas retornadas na busca."
+          - name: partner_id_clicked
+            description: "ID do parceiro cujo resultado foi clicado."
+          - name: price_shown
+            description: "Menor preço exibido na busca (R$)."
+
+      - name: raw_bookings
+        description: "Reservas realizadas na plataforma, incluindo todos os status."
+        columns:
+          - name: booking_id
+            description: "Identificador único da reserva."
+          - name: session_id
+            description: "Sessão associada à reserva."
+          - name: user_id
+            description: "Identificador do usuário que realizou a reserva."
+          - name: partner_id
+            description: "Parceiro responsável pela reserva."
+          - name: booked_at
+            description: "Timestamp da criação da reserva."
+          - name: pickup_date
+            description: "Data de retirada do veículo."
+          - name: dropoff_date
+            description: "Data de devolução do veículo."
+          - name: pickup_location
+            description: "Local de retirada do veículo."
+          - name: car_category
+            description: "Categoria do veículo reservado."
+          - name: daily_rate
+            description: "Valor da diária do veículo."
+          - name: total_amount
+            description: "Valor total da reserva."
+          - name: currency
+            description: "Moeda da transação (ISO 4217)."
+          - name: status
+            description: "Status da reserva (confirmed, pending, cancelled, etc.)."
+          - name: payment_method
+            description: "Forma de pagamento utilizada."
+
+      - name: raw_cancellations
+        description: "Eventos de cancelamento de reservas."
+        columns:
+          - name: cancellation_id
+            description: "Identificador único do cancelamento."
+          - name: booking_id
+            description: "Reserva associada ao cancelamento."
+          - name: cancelled_at
+            description: "Timestamp do cancelamento."
+          - name: reason
+            description: "Motivo do cancelamento."
+          - name: cancelled_by
+            description: "Responsável pelo cancelamento (customer, partner, system, admin)."
+          - name: refund_amount
+            description: "Valor reembolsado ao cliente."
+          - name: refund_status
+            description: "Status do reembolso (processed, pending, denied)."
+          - name: days_before_pickup
+            description: "Dias entre o cancelamento e a data de retirada."

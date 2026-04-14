@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: int_cancellations
+    description: "Modelo intermediate que cruza o valor da reserva cancelada para identificar riscos."
+    columns:
+      - name: cancellation_id
+        description: "Chave única"
+        tests:
+          - not_null
+          - unique
+
+      - name: is_refund_anomaly_flag
+        description: "Estorno superior ao pago na reserva original."
+        tests:
+          - not_null
+
+      - name: is_late_cancellation_flag
+        description: "Cancelamento realizado próximo à data de retirada."
+        tests:
+          - not_null
+
+      - name: booking_id
+        description: "Identificador único da reserva"
+        tests:
+          - relationships:
+              to: ref('stg_bookings')
+              field: booking_id

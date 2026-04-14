@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: fct_bookings
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    description: "Tabela fato de reservas com métricas de receita e conversão."
+    columns:
+      - name: booking_id
+        description: "Identificador único da reserva"
+        tests:
+          - not_null
+          - unique
+      - name: session_id
+        description: "Identificador único da sessão atrelada"
+        tests:
+          - relationships:
+              to: ref('fct_sessions')
+              field: session_id
+      - name: user_id
+        description: "Identificador único do usuário que fechou a reserva"
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+      - name: partner_id
+        description: "Identificador único do parceiro (locadora)"
+        tests:
+          - relationships:
+              to: ref('dim_partners')
+              field: partner_id
+      - name: tsp_booked
+        description: "Timestamp temporal do backend confirmando quando o contrato tomou efeito visual"
+      - name: dt_pickup
+        description: "Data agendada em que o consumidor previu retirar posse locacional presencialmente"
+      - name: dt_dropoff
+        description: "Data em que o automóvel foi/será retornado finalizando o vínculo possessório"
+      - name: total_amount_amt
+        description: "Quantidade total unificada balizando todo o financeiro acoplado à check list da compra"
+      - name: daily_rate_amt
+        description: "Matemática representacional contendo do rateamento base por diária"
+      - name: booking_status
+        description: "Sinal de controle transacional da locação (confirmed, cancelled, pending...)"
+      - name: pickup_location_name
+        description: "Texto ou filial oficial de base de pátio ligada indissociavelmente ao pickup inicial"
+      - name: car_category_name
+        description: "Classe legível indicativa (ex: SUV, Compact) retida do inventário estático"
+      - name: currency_code
+        description: "Símbolo universal (ISO 4217, p.e USD/BRL/EUR) cravando base monetária"
+      - name: payment_method_name
+        description: "A origem de fluxo final por detrás (se boleto, split-card ou credit-card...)"
+      - name: channel_name
+        description: "Denormalizado pontualmente da subcamada de navegação apontando o gatilho mercadológico"
+      - name: device_type
+        description: "Denormalizado via sessão informando o aparelho computacional da UI (desktop/mobile...)"
+      - name: session_country
+        description: "Nações geolocalizadas na origem da navegação mapeando o país primário onde iniciou"
+      - name: partner_name
+        description: "Nome de exposição legal do Fornecedor listado relacionalmente preenchendo a vaga na FCT"
+      - name: tier_name
+        description: "Atrelamento de ranking/cota de locadoras em prol de métricas macroeconômicas na gestão"
+      - name: commission_rate_num
+        description: "Fração do net rate contábil que foi comissionada atrelada formal e singular a venda."
+      - name: commission_tier_name
+        description: "Ranking textual ('Low/Medium/High') do fee retido pela empresa a cargo da locadora oficial."
+      - name: cancellation_id
+        description: "ForeignKey correlacional rechaçando a transação em direção ao banco espelho de canceladas"
+      - name: refund_amount_amt
+        description: "Totais injetados extornados sob punição contratual para a devolução material na rescisão."
+      - name: is_refund_anomaly_flag
+        description: "Trigger marcando ocorrências esdrúxulas onde multas romperam lógicas transpondo 100% de refund contra gasto."
+      - name: is_late_cancellation_flag
+        description: "Boolean disparando rescisões próximas (janela exígua de buffer de pátio) da coleta."
+      - name: is_gross_booking_flag
+        description: "Boolean certificando validações para apuração gross revenue oficial contábil (confirmadas)"
+      - name: is_realized_booking_flag
+        description: "Boolean apurando exclusivamente transações confirmadas que se tornaram 'completed'."
+      - name: is_cancelled_booking_flag
+        description: "Boolean contábil filtrando para o churn as que encerram forçadamente (Status = cancelled)"
+      - name: has_cancellation_flag
+        description: "Detectação direta sob JOIN constatando vida/ausência no arquivo formal e tabelas externas de desistencia."
+      - name: gross_revenue_amt
+        description: "Receita integral faturada na plataforma para o grupo (Condicionada validamente e sem cancel)"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: commission_revenue_amt
+        description: "Receita retida de Take Rate limpa e líquida gerando cash contábil da intermediadora no dia."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: is_high_value_booking
+        description: "Marcação outlier emitindo alarde a análises onde a transação subiu além the x percentis da norma base global."

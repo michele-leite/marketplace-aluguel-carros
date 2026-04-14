@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: dim_dates
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    description: "Dimensão calendário (Date Spine) usada nos agrupamentos temporais."
+    columns:
+      - name: dt_date
+        description: "Data principal"
+        tests:
+          - not_null
+          - unique
+      - name: nr_year
+        description: "Ano (AAAA) extraído da base de referência"
+      - name: nr_month
+        description: "Mês (em numeral entre 1-12) extraído do spine"
+      - name: nr_day
+        description: "Dia numérico temporal restrito de (1 a 31) extraído temporalmente"
+      - name: ds_year_month
+        description: "Sintaxe unida de Ano e mês sob o formato clássico text (YYYY-MM)"
+      - name: ds_month_name
+        description: "Métrica por extenso listando o nome global inglês do Mês correspondente"
+      - name: ds_weekday_name
+        description: "Nome por extenso do dia cronológico corrente correspondente associado"
+      - name: nr_weekday
+        description: "Índice numérico padrão retornando exatamente o dia absoluto relativo da semana respectiva"
+      - name: fl_is_weekend
+        description: "Indicador utilitário flaggando em Booleano (Sábado ou Domingo) para fatiamentos comportamentais"

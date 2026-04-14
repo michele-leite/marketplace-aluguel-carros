@@ -1,0 +1,117 @@
+data_contract:
+  name: "Customer Success Metrics"
+  principles:
+    - "Single Source of Truth"
+    - "Definições versionadas"
+    - "Métricas imutáveis semanticamente"
+  
+  metrics:
+    active_users:
+      description: "usuários com atividade recente"
+      grain: "diário"
+      definition: "usuários com ≥1 sessão nos últimos 30 dias"
+      source: "fct_sessions"
+      owner: "Data"
+      sla: "D+1 até 08:00"
+      freshness: "24h"
+      criticality: "Alta"
+      tests:
+        - "not null"
+        - ">= 0"
+        
+    churn_rate:
+      description: "perda de usuários ativos"
+      grain: "mensal"
+      definition: "usuários ativos no período anterior que ficaram inativos"
+      formula: "churned / active_previous"
+      owner: "CS"
+      sla: "D+2"
+      criticality: "Alta"
+      dependencies:
+        - "active_users"
+      risks:
+        - "definição de 'ativo' inconsistente"
+        
+    retention_rate:
+      description: "% de usuários que permanecem ativos"
+      formula: "retained / active_previous"
+      grain: "mensal"
+      owner: "CS"
+      criticality: "Alta"
+      
+    ltv_net:
+      description: "valor gerado por usuário"
+      definition: "soma de commission_revenue_amt"
+      source: "fct_bookings"
+      owner: "Finance"
+      criticality: "Alta"
+      
+    ltv_gross:
+      description: "valor bruto transacionado"
+      definition: "soma de gross_revenue_amt"
+      owner: "Produto"
+      
+    arpu:
+      description: "receita média por usuário"
+      formula: "receita total / usuários ativos"
+      grain: "mensal"
+      criticality: "Alta"
+      
+    expansion_revenue:
+      description: "receita incremental de clientes existentes"
+      definition: "receita período atual - receita período anterior"
+      owner: "CS"
+      
+    engagement_score:
+      description: "score de saúde do cliente"
+      components:
+        - "recência"
+        - "frequência"
+        - "monetização"
+      range: "0–100"
+      criticality: "Média"
+      
+    days_since_last_activity:
+      description: "recência do usuário"
+      source: "fct_sessions"
+      
+    cohort_retention:
+      description: "retenção por cohort de aquisição"
+      grain: "cohort_month + período"
+
+  conflict_management:
+    case: "Receita"
+    conflict:
+      - "Finance -> receita líquida"
+      - "Produto/CS -> receita bruta"
+    solution:
+      definition:
+        ltv_net: "oficial financeira"
+        ltv_gross: "oficial produto"
+      rules:
+        - "Naming obrigatório"
+        - "Documentação obrigatória no BI"
+
+  governance:
+    rules:
+      - "Mudanças requerem versionamento"
+    approval:
+      - "Data"
+      - "Área de Negócio"
+    audit: "trimestral"
+
+  critical_slas:
+    churn_rate:
+      sla: "D+2"
+      impact: "Alto"
+    active_users:
+      sla: "D+1"
+      impact: "Alto"
+    ltv:
+      sla: "D+1"
+      impact: "Alto"
+
+  observations:
+    - "Todas as métricas devem derivar de fct_sessions e fct_bookings"
+    - "Evitar cálculos no BI"
+    - "Lógica centralizada no dbt"

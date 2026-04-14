@@ -1,0 +1,74 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+# Nome do projeto (mesmo do dbt init)
+name: 'aluguel_veiculo'
+version: '1.0.0'
+config-version: 2
+# This setting configures which "profile" dbt uses for this project.
+profile: 'aluguel_veiculo'
+
+
+# Pastas do projeto
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Configuracoes de modelos por camada
+models:
+  aluguel_veiculo:                          # Deve bater com o name do projeto
+    staging:
+      +materialized: view             # Views - sempre atualizadas, sem custo de storage
+      +schema: staging                 # Schema: staging
+      +tags: ["staging", "raw", "cleaned"]
+      +meta:
+        modeling_layer: staging
+
+    intermediate:
+      +materialized: table            # Tables - colunas calculadas persistidas
+      +schema: intermediate                 # Schema: intermediate
+      +tags: ["intermediate", "rules"]
+      +meta:
+        modeling_layer: intermediate
+
+    marts:
+      +materialized: table
+      +tags: ["marts", "kpi", "metrics"]
+      +meta:
+        modeling_layer: marts
+
+      core:
+        +schema: marts_core
+
+        dimensions:
+          +tags: ["dim"]
+          +materialized: table
+
+        facts:
+          +tags: ["fact"]
+          +materialized: incremental
+
+      analytics:
+        +schema: marts_analytics
+
+        funnel:
+          +tags: ["funnel"]
+          +materialized: table
+
+        revenue:
+          +tags: ["revenue"]
+          +materialized: table
+
+# Variaveis do projeto
+vars:
+  segmentacao_vip_threshold: 10000    # Receita minima para cliente VIP
+  segmentacao_top_tier_threshold: 5000 # Receita minima para TOP_TIER

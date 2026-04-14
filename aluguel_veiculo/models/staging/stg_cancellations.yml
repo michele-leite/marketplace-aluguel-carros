@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_cancellations
+    description: "Modelo staging de cancelamentos de reservas, deduplicado e com as tipagens ajustadas."
+    columns:
+      - name: cancellation_id
+        description: "Chave primária: Identificador único do cancelamento."
+        tests:
+          - unique
+          - not_null
+      - name: booking_id
+        description: "Reserva associada ao cancelamento."
+      - name: tsp_cancelled
+        description: "Timestamp do cancelamento."
+      - name: cancellation_reason
+        description: "Motivo do cancelamento."
+      - name: cancelled_by
+        description: "Responsável pelo cancelamento (customer, partner, system, admin)."
+      - name: refund_amount_amt
+        description: "Valor reembolsado ao cliente."
+      - name: refund_status
+        description: "Status do reembolso (processed, pending, denied)."
+      - name: days_before_pickup_qty
+        description: "Dias entre o cancelamento e a data de retirada."

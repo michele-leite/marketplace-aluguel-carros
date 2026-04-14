@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: dim_partners
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    description: "Dimensão Parceiros consolidada para uso analítico"
+    columns:
+      - name: partner_id
+        description: "ID do parceiro"
+        tests:
+          - not_null
+          - unique
+      - name: partner_name
+        description: "Nome do parceiro listado"
+      - name: country_code
+        description: "País de operação do parceiro"
+      - name: tier_name
+        description: "Nível tarifário oficial (plano do parceiro)"
+      - name: partner_status
+        description: "Status de operação ativa vigente ('active', 'inactive')"
+      - name: commission_rate_num
+        description: "Taxa numérica bruta de comissão retida de cada reserva"
+      - name: tsp_created
+        description: "Data de cadastro original do parceiro"
+      - name: tsp_updated
+        description: "Data da última atualização cadastral"
+      - name: email
+        description: "E-mail de contato oficial PII"
+      - name: is_active_partner_flag
+        description: "Booleano consolidando logicamente se possui operations 'active'"
+      - name: is_valid_commission_flag
+        description: "Analisa preventivamente se a commission_rate está num threshhold numérico válido"
+      - name: commission_tier_name
+        description: "Agrupamento dinâmico analítico rankeando o rentabilismo do tier ('high', 'medium', 'low')"

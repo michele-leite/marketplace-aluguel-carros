@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: int_valid_bookings
+    description: "Modelo intermediate com criação de regras e remoção de reservas inválidas (valores zerados)."
+    tests:
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_A: dt_dropoff
+          column_B: dt_pickup
+    columns:
+      - name: booking_id
+        tests:
+          - not_null
+          - unique
+
+      - name: partner_id
+        tests:
+          - relationships:
+              to: ref('int_partners')
+              field: partner_id
+
+      - name: dt_dropoff
+
+
+
+      - name: is_outlier_high_value_flag
+        description: "Tag para alertar transações atipicamente altas (> 15k)"
+

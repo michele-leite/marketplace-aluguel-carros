@@ -1,0 +1,117 @@
+version: 2
+
+models:
+  - name: mart_funnel
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "product"
+    description: >
+      Tabela agregada do funil de conversão (sessions → searches → bookings),
+      com granularidade diária por canal, dispositivo e país.
+
+    columns:
+
+      - name: dt_date
+        description: "Data da sessão (nível dia)"
+        tests:
+          - not_null
+
+      - name: channel_name
+        description: "Canal de aquisição da sessão"
+        tests:
+          - not_null
+
+      - name: device_type
+        description: "Tipo de dispositivo da sessão"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['desktop','mobile','tablet','unknown']
+              config:
+                severity: warn
+
+      - name: country_code
+        description: "País de origem da sessão"
+        tests:
+          - not_null
+
+      - name: nr_sessions
+        description: "Número total de sessões"
+        tests:
+          - not_null
+
+      - name: nr_sessions_with_search
+        description: "Sessões com ao menos uma busca"
+        tests:
+          - not_null
+
+      - name: nr_sessions_with_booking
+        description: "Sessões com ao menos uma reserva"
+        tests:
+          - not_null
+
+      - name: nr_sessions_with_valid_booking
+        description: "Sessões com reserva válida (confirmed/completed)"
+        tests:
+          - not_null
+
+      - name: nr_total_searches
+        description: "Número total de buscas realizadas"
+        tests:
+          - not_null
+
+      - name: avg_searches_per_session
+        description: "Média de buscas por sessão"
+
+      - name: nr_high_engagement_sessions
+        description: "Sessões com alto engajamento (muitas buscas)"
+
+      - name: total_revenue_amt
+        description: "Receita total (apenas bookings válidos)"
+        tests:
+          - not_null
+
+      - name: revenue_per_session
+        description: "Receita média por sessão"
+
+      - name: avg_ticket
+        description: "Ticket médio por sessão com booking"
+
+      - name: search_rate
+        description: "Proporção de sessões que realizaram busca"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+      
+      - name: booking_rate
+        description: "Proporção de sessões que geraram booking"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+      
+      - name: search_to_booking_rate
+        description: "Conversão de busca para booking"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+
+    tests:
+
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - dt_date
+            - channel_name
+            - device_type
+            - country_code
+
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_A: nr_sessions
+          column_B: nr_sessions_with_search
+
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_A: nr_sessions_with_search
+          column_B: nr_sessions_with_booking

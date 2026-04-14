@@ -1,0 +1,49 @@
+version: 2
+
+models:
+
+  - name: int_partners
+    description: "Camada intermediate com regras de negócio e validações para parceiros"
+    columns:
+      - name: partner_id
+        description: "Identificador único do parceiro"
+        tests:
+          - not_null
+          - unique
+      - name: partner_name
+      - name: country_code
+      - name: tier_name
+      - name: tsp_created
+      - name: tsp_updated
+      - name: email
+
+      - name: partner_status
+        description: "Status do parceiro"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'inactive', 'suspended']
+
+      - name: commission_rate_num
+        description: "Taxa de comissão do parceiro"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0.05
+              max_value: 0.30
+              row_condition: "partner_status = 'active'"
+              config:
+                severity: warn
+
+      - name: is_active_partner_flag
+        description: "Flag indicando se parceiro está ativo"
+        tests:
+          - not_null
+
+      - name: is_valid_commission_flag
+        description: "Flag indicando se comissão está dentro do range esperado (0.05–0.30)"
+        tests:
+          - not_null
+
+      - name: commission_tier_name
+        description: "Classificação da taxa de comissão em tiers"

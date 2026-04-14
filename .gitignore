@@ -1,0 +1,20 @@
+# Ambientes Virtuais (MUITO IMPORTANTE NÃO SUBIR PARA O GITHUB)
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Arquivos de log
+logs/
+*.log
+
+# DBT Artefatos (Não subir dependencias compiladas nem logs de banco)
+aluguel_veiculo/target/
+aluguel_veiculo/dbt_packages/
+aluguel_veiculo/dbt_modules/
+
+# OS e Temporários
+.DS_Store
+Thumbs.db
