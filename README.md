@@ -113,6 +113,8 @@ Para evitar o escaneamento completo das tabelas (*Full Table Scan*) no PostgreSQ
 - Isso garante que a consulta seja executada apenas sobre os índices, reduzindo drasticamente o tempo de processamento e o consumo de recursos no Supabase.
 
 > **Plano de Testes do Incremental:** Para validar cada um desses comportamentos das tabelas incrementais com queries reais, consulte o [plano_teste_incremental.md](extras/plano_teste_incremental.md).
+
+
 > **Log de Execução do Incremental:** Para visualizar o log de execução de cada um dos modelos incrementais, consulte o [log_execucao_e_testes.md](extras/log_execucao_e_testes.md).
 
 ---
