@@ -59,7 +59,7 @@ bookings as (
         count(*) as nr_bookings,
         sum(case when booking_status in ('confirmed','completed') then 1 else 0 end) as nr_valid_bookings,
         sum(case when booking_status = 'completed' then 1 else 0 end) as nr_completed_bookings,
-        sum(total_amount_amt) as total_revenue_amt
+        sum(total_amount_brl_amt) as total_revenue_amt
     from {{ ref('int_valid_bookings') }}
     group by session_id
 

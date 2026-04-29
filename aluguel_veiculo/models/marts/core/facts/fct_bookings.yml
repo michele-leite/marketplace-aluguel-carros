@@ -93,3 +93,24 @@ models:
               min_value: 0
       - name: is_high_value_booking
         description: "Marcação outlier emitindo alarde a análises onde a transação subiu além the x percentis da norma base global."
+      - name: total_amount_brl_amt
+        description: "Valor total da reserva normalizado em BRL via taxa de câmbio da data da reserva"
+      - name: daily_rate_brl_amt
+        description: "Diária da reserva normalizada em BRL via taxa de câmbio da data da reserva"
+      - name: gross_revenue_brl_amt
+        description: "Receita bruta normalizada em BRL (confirmed + completed)"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: commission_revenue_brl_amt
+        description: "Receita de comissão normalizada em BRL"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: is_missing_fx_rate_flag
+        description: "Flag indicando se a taxa de câmbio estava ausente para a combinação moeda/data da reserva"
+        tests:
+          - accepted_values:
+              values: [false]
+              config:
+                severity: warn

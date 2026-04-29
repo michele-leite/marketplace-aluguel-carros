@@ -26,3 +26,14 @@ models:
       - name: is_outlier_high_value_flag
         description: "Tag para alertar transações atipicamente altas (> 15k)"
 
+      - name: total_amount_brl_amt
+        description: "Valor total da reserva convertido para BRL usando a taxa de câmbio da data da reserva"
+
+      - name: daily_rate_brl_amt
+        description: "Diária da reserva convertida para BRL usando a taxa de câmbio da data da reserva"
+
+      - name: applied_fx_rate
+        description: "Taxa de câmbio aplicada (1 para BRL, exchange_rate para demais moedas)"
+
+      - name: is_missing_fx_rate_flag
+        description: "Flag indicando ausência de taxa de câmbio para a combinação moeda/data"

@@ -42,6 +42,9 @@ joined as (
         b.dt_dropoff,
         b.total_amount_amt,
         b.daily_rate_amt,
+        b.total_amount_brl_amt,
+        b.daily_rate_brl_amt,
+        b.is_missing_fx_rate_flag,
         b.booking_status,
         b.pickup_location_name,
         b.car_category_name,
@@ -85,7 +88,7 @@ joined as (
             else 0 
         end as has_cancellation_flag,
 
-        -- financeiro
+        -- financeiro (valores originais)
         case 
             when b.booking_status in ('confirmed', 'completed') then b.total_amount_amt 
             else 0 
@@ -95,6 +98,17 @@ joined as (
             when b.booking_status in ('confirmed', 'completed') then b.total_amount_amt * p.commission_rate_num 
             else 0 
         end as commission_revenue_amt,
+
+        -- financeiro (normalizado BRL)
+        case 
+            when b.booking_status in ('confirmed', 'completed') then b.total_amount_brl_amt 
+            else 0 
+        end as gross_revenue_brl_amt,
+        
+        case 
+            when b.booking_status in ('confirmed', 'completed') then b.total_amount_brl_amt * p.commission_rate_num 
+            else 0 
+        end as commission_revenue_brl_amt,
         
         case 
             when b.is_outlier_high_value_flag then 1 

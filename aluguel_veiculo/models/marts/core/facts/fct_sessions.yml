@@ -59,7 +59,7 @@ models:
       - name: nr_completed_bookings
         description: "Fatia exclusiva que afunilou por todas as perdas terminando como entregue o ativo transacional no status log Completed integralmente."
       - name: total_revenue_amt
-        description: "Soma absoluta financeira extraída unicamente sob esta base agregando lucros isolando para ARPU por canal global validado."
+        description: "Soma da receita normalizada em BRL (via taxa de câmbio da data da reserva) para todas as reservas da sessão."
       - name: has_search_flag
         description: "Flag nativa boolean demonstrando a simples superação da barreira inicial de pesquisa do usuário engatado no portal."
       - name: has_booking_flag

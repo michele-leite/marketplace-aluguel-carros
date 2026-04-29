@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: dim_exchange_rates
+    meta:
+      owner: "michele.leite"
+      layer: "mart"
+      business_domain: "finance"
+    description: "Dimensão de taxas de câmbio diárias para normalização monetária. Fonte: seed exchange_rates."
+    columns:
+      - name: date_day
+        description: "Data de referência da taxa de câmbio"
+        tests:
+          - not_null
+      - name: from_currency_code
+        description: "Código ISO 4217 da moeda de origem (ex: USD, ARS, CLP, COP, BRL)"
+        tests:
+          - not_null
+      - name: to_currency_code
+        description: "Código ISO 4217 da moeda de destino (sempre BRL neste pipeline)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['BRL']
+      - name: exchange_rate
+        description: "Taxa de conversão de from_currency para to_currency na data de referência"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
