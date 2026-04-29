@@ -139,7 +139,7 @@ Para evitar o escaneamento completo das tabelas (*Full Table Scan*) no PostgreSQ
 
 ---
 
-## 💱 Currency Normalization (FX)
+## Currency Normalization (FX)
 
 ### Problema
 
